@@ -1,19 +1,26 @@
 <template>
   <div class="home">
     <h1>{{ message }}</h1>
+    <router-link to="/signup">Signup</router-link> |
+    <router-link to="/login">Login</router-link> |
+    <router-link to="/logout">Logout</router-link>
 
-    <h2> New Product </h2>
+    <h2> New Movie </h2>
     Title: <input type="text" v-model="newMovieTitle" /> <br />
-    Year: <input type="text" v-model="newMovieYear" /> <br />
+    Year: <input type="number" v-model="newMovieYear" /> <br />
     Plot: <input type="text" v-model="newMoviePlot" /> <br />
     Director: <input type="text" v-model="newMovieDirector" /> <br />
 
     <button v-on:click="createMovie()">Create Movie</button>
+
+      
     
 
 
     <div v-for="movie in movies" v-bind:key="movie.id">
+    <router-link :to="`/movies/${movie.id}/`" >
     <h3>Title {{ movie.title }} </h3>
+    </router-link>
     <button v-on:click="showMovie(movie)">More Info</button>
     <p>Year {{movie.year}} </p>
     <p>Plot {{ movie.plot }} </p>
@@ -64,9 +71,9 @@
     },
     createMovie: function () {
       var params = {
-        name: this.newMovieTitle,
-        description: this.newMovieYear,
-        price: this.newMoviePlot,
+        title: this.newMovieTitle,
+        year: this.newMovieYear,
+        plot: this.newMoviePlot,
         director: this.newMovieDirector
       };
       axios.post("http://localhost:3000/movies", params).then((response) => {
