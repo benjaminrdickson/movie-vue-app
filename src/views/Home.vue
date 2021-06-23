@@ -1,9 +1,7 @@
 <template>
   <div class="home">
     <h1>{{ message }}</h1>
-    <router-link to="/signup">Signup</router-link> |
-    <router-link to="/login">Login</router-link> |
-    <router-link to="/logout">Logout</router-link>
+    
 
     <h2> New Movie </h2>
     Title: <input type="text" v-model="newMovieTitle" /> <br />
@@ -17,17 +15,18 @@
     
 
 
-    <div v-for="movie in movies" v-bind:key="movie.id">
-    <router-link :to="`/movies/${movie.id}/`" >
-    <h3>Title {{ movie.title }} </h3>
-    </router-link>
-    <button v-on:click="showMovie(movie)">More Info</button>
-    <p>Year {{movie.year}} </p>
-    <p>Plot {{ movie.plot }} </p>
-    <p>Director {{ movie.director }}</p>
-
-    <dialog id="movie-details">
-      <form method="dialog">
+    Search by title: <input type="text" v-model="searchTerm" placeholder="Search" />
+    <div v-for="movie in filterBy(movies, searchTerm, 'title')" v-bind:key="movie.id">
+      <router-link :to="`/movies/${movie.id}/`" >
+      <h3>Title {{ movie.title }} </h3>
+      </router-link>
+      <button v-on:click="showMovie(movie)">More Info</button>
+      <p>Year {{movie.year}} </p>
+      <p>Plot {{ movie.plot }} </p>
+      <p>Director {{ movie.director }}</p>
+      
+      <dialog id="movie-details">
+        <form method="dialog">
         <h1>Movie Info</h1>
         <img src="" alt="" />
         <p>Title: {{ currentMovie.title }}</p>
@@ -35,8 +34,8 @@
         <p>Plot: {{ currentMovie.plot }}</p>
         <p>Director: {{ currentMovie.director }}</p>
         <button>Close</button>
-      </form>
-    </dialog>
+        </form>
+      </dialog>
 
 
     </div>
@@ -47,7 +46,9 @@
 
 <script>
   import axios from "axios";
+  import Vue2Filters from "vue2-filters";
   export default {
+    mixins: [Vue2Filters.mixin],
     data: function () {
       return {
         message: "Benjamins Favorite Movies!",
@@ -56,7 +57,9 @@
         newMovieYear: "",
         newMoviePlot: "",
         newMovieDirector: "",
-        currentMovie: ""
+        currentMovie: "",
+        titleFilter: "",
+        searchTerm: " "
           };
     },
     created: function () {
@@ -88,7 +91,11 @@
       console.log(movie);
       this.currentMovie = movie;
       document.querySelector("#movie-details").showModal();
-    }
+    },
+    methods: {
+      isLoggedIn: function() {
+        return localStorage.getItem('jwt');
+  }}
     }
     };
 </script>
